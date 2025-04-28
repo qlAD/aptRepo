@@ -43,6 +43,15 @@ jobs:
       run: |
         ./scripts/setup-reprepro.sh
 
+    - name: Upload APT Repo to Aliyun OSS
+      uses: fangbinwei/aliyun-oss-website-action@v1
+      with:
+        accessKeyId: ${{ secrets.ACCESS_KEY_ID }}
+        accessKeySecret: ${{ secrets.ACCESS_KEY_SECRET }}
+        bucket: ${{ secrets.ACCESS_BUCKET_NAME }}
+        endpoint: oss-cn-shanghai.aliyuncs.com
+        folder: ./gh-pages
+
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
