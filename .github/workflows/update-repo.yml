@@ -25,9 +25,9 @@ jobs:
         chmod 700 ~/.gnupg
         echo "$GPG_PRIVATE_KEY" | gpg --batch --import
         # 获取密钥指纹
-        KEY_FP=$(gpg --list-secret-keys --with-colons your@email.com | awk -F: '$1 == "fpr" {print $10}' | head -n1)
+        KEY_FP=$(gpg --list-secret-keys --with-colons | awk -F: '$1 == "fpr" {print $10}' | head -n1)
         # 信任密钥
-        echo -e "trust\n5\ny\n" | gpg --command-fd 0 --edit-key $KEY_FP
+        echo -e "trust\n5\ny\n" | gpg --batch --command-fd 0 --edit-key $KEY_FP
         # 验证密钥存在
         gpg --list-secret-keys
 
