@@ -1,6 +1,8 @@
 name: Update APT Repository
 
 on:
+  workflow_dispatch:
+    
   push:
     paths:
       - 'packages.list'
