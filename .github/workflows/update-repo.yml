@@ -2,7 +2,7 @@ name: Update APT Repository
 
 on:
   workflow_dispatch:
-    
+
   push:
     paths:
       - 'packages.list'
@@ -25,6 +25,7 @@ jobs:
       run: |
         mkdir -p ~/.gnupg
         chmod 700 ~/.gnupg
+        echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
         echo "$GPG_PRIVATE_KEY" | gpg --batch --import
         # 获取密钥指纹
         KEY_FP=$(gpg --list-secret-keys --with-colons | awk -F: '$1 == "fpr" {print $10}' | head -n1)
