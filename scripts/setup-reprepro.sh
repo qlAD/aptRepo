@@ -3,13 +3,14 @@
 REPO_DIR="gh-pages"
 CONF_DIR="repo-config"
 
+mkdir -p $REPO_DIR/
 mkdir -p $CONF_DIR/conf $CONF_DIR/incoming
 
 cat > $CONF_DIR/conf/distributions <<EOF
 Origin: qlAD's APT Repository
 Label: Github Related Packages
 Codename: stable
-Architectures: amd64 arm64 all
+Architectures: amd64 arm64
 Components: main
 Description: Unofficial APT repository for Github Releases
 SignWith: qlad_adgk@163.com
