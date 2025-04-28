@@ -1,0 +1,48 @@
+name: Update APT Repository
+
+on:
+  push:
+    paths:
+      - 'packages.list'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y reprepro gnupg wget
+
+    - name: Setup GPG
+      env:
+        GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+      run: |
+        mkdir -p ~/.gnupg
+        chmod 700 ~/.gnupg
+        echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+        # 获取密钥指纹
+        KEY_FP=$(gpg --list-secret-keys --with-colons your@email.com | awk -F: '$1 == "fpr" {print $10}' | head -n1)
+        # 信任密钥
+        echo -e "trust\n5\ny\n" | gpg --command-fd 0 --edit-key $KEY_FP
+        # 验证密钥存在
+        gpg --list-secret-keys
+
+    - name: Fetch Packages
+      run: |
+        mkdir -p downloaded_packages
+        ./scripts/fetch-packages.sh
+
+    - name: Build Repo
+      run: |
+        ./scripts/setup-reprepro.sh
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./gh-pages
+        keep_files: false
