@@ -21,7 +21,7 @@ Description: Unofficial APT repository for Github Releases
 SignWith: default
 Suite: stable
 Version: 1.0
-Default: misc
+Sections: misc
 UDebComponents: main
 EOF
 
