@@ -7,7 +7,7 @@ on:
       - 'packages.list'
 
 jobs:
-  build:
+  build-repo:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -33,25 +33,18 @@ jobs:
       run: |
         ./scripts/setup-reprepro.sh
 
-  pages-directory-listing:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - name: Generate Directory Listings
+      uses: jayanta525/github-pages-directory-listing@v4.0.0
+      with:
+        FOLDER: ./gh-pages
 
-      - name: Generate Directory Listings
-        uses: jayanta525/github-pages-directory-listing@v4.0.0
-        with:
-          FOLDER: ./gh-pages
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3.0.1
-        with:
-          path: './gh-pages'
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3.0.1
+      with:
+        path: './gh-pages'
 
   deploy:
-    needs: pages-directory-listing
+    needs: build-repo
     permissions:
       pages: write
       id-token: write
