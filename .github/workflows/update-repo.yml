@@ -2,7 +2,6 @@ name: Update APT Repository
 
 on:
   workflow_dispatch:
-
   push:
     paths:
       - 'packages.list'
@@ -34,18 +33,45 @@ jobs:
       run: |
         ./scripts/setup-reprepro.sh
 
-    - name: Upload APT Repo to Aliyun OSS
-      uses: fangbinwei/aliyun-oss-website-action@v1
-      with:
-        accessKeyId: ${{ secrets.ACCESS_KEY_ID }}
-        accessKeySecret: ${{ secrets.ACCESS_KEY_SECRET }}
-        bucket: ${{ secrets.ACCESS_BUCKET_NAME }}
-        endpoint: oss-cn-shanghai.aliyuncs.com
-        folder: ./gh-pages
+  pages-directory-listing:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
 
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./gh-pages
-        keep_files: false
+      - name: Generate Directory Listings
+        uses: jayanta525/github-pages-directory-listing@v4.0.0
+        with:
+          FOLDER: ./gh-pages
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3.0.1
+        with:
+          path: './gh-pages'
+
+  deploy:
+    needs: pages-directory-listing
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4.0.0
+
+      - name: Upload APT Repo to Aliyun OSS
+        uses: fangbinwei/aliyun-oss-website-action@v1
+        with:
+          accessKeyId: ${{ secrets.ACCESS_KEY_ID }}
+          accessKeySecret: ${{ secrets.ACCESS_KEY_SECRET }}
+          bucket: ${{ secrets.ACCESS_BUCKET_NAME }}
+          endpoint: oss-cn-shanghai.aliyuncs.com
+          folder: ./gh-pages
+
