@@ -19,20 +19,11 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y reprepro gnupg wget
 
-    - name: Setup GPG
-      env:
-        GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-      run: |
-        mkdir -p ~/.gnupg
-        chmod 700 ~/.gnupg
-        echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
-        echo "$GPG_PRIVATE_KEY" | gpg --batch --import
-        # 获取密钥指纹
-        KEY_FP=$(gpg --list-secret-keys --with-colons | awk -F: '$1 == "fpr" {print $10}' | head -n1)
-        # 信任密钥
-        echo -e "trust\n5\ny\n" | gpg --batch --command-fd 0 --edit-key $KEY_FP
-        # 验证密钥存在
-        gpg --list-secret-keys
+    - name: Import GPG key
+      uses: crazy-max/ghaction-import-gpg@v6
+      with:
+        gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+        passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
     - name: Fetch Packages
       run: |
