@@ -12,13 +12,13 @@
 sudo apt-get update
 sudo apt-get install ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://repos.qladgk.com/public-key.asc -o /etc/apt/keyrings/qladgk.asc
+sudo curl -fsSL https://apt-repo.qladgk.com/public-key.asc -o /etc/apt/keyrings/qladgk.asc
 sudo chmod a+r /etc/apt/keyrings/qladgk.asc
 ```
 
 如果上述链接无法访问，请检查链接的合法性或稍后重试。您也可以通过以下链接手动下载：
 
-- [https://repos.qladgk.com/public-key.asc](https://repos.qladgk.com/public-key.asc)
+- [https://apt-repoqladgk.com/public-key.asc](https://apt-repoqladgk.com/public-key.asc)
 
 ## 使用方法
 
