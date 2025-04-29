@@ -33,6 +33,15 @@ jobs:
       run: |
         ./scripts/setup-reprepro.sh
 
+    - name: Upload APT Repo to Aliyun OSS
+      uses: fangbinwei/aliyun-oss-website-action@v1
+      with:
+        accessKeyId: ${{ secrets.ACCESS_KEY_ID }}
+        accessKeySecret: ${{ secrets.ACCESS_KEY_SECRET }}
+        bucket: ${{ secrets.ACCESS_BUCKET_NAME }}
+        endpoint: oss-cn-shanghai.aliyuncs.com
+        folder: ./gh-pages
+
     - name: Generate Directory Listings
       uses: jayanta525/github-pages-directory-listing@v4.0.0
       with:
@@ -43,7 +52,7 @@ jobs:
       with:
         path: './gh-pages'
 
-  deploy:
+  deploy-index:
     needs: build-repo
     permissions:
       pages: write
@@ -56,13 +65,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4.0.0
-
-      - name: Upload APT Repo to Aliyun OSS
-        uses: fangbinwei/aliyun-oss-website-action@v1
-        with:
-          accessKeyId: ${{ secrets.ACCESS_KEY_ID }}
-          accessKeySecret: ${{ secrets.ACCESS_KEY_SECRET }}
-          bucket: ${{ secrets.ACCESS_BUCKET_NAME }}
-          endpoint: oss-cn-shanghai.aliyuncs.com
-          folder: ./gh-pages
 
